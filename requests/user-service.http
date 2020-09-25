@@ -1,0 +1,28 @@
+GET {{host}}/user/1
+Accept: application/json
+Content-Type: application/json
+
+###
+
+POST {{host}}/user
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Nguyễn Quang Lý",
+  "gender": "FEMALE"
+}
+
+###
+PATCH {{host}}/user/1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "gender": "MALE"
+}
+
+###
+GET {{host}}/users?order_by=id.desc
+Accept: application/json
+Content-Type: application/json

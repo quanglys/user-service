@@ -1,0 +1,5 @@
+http_server:
+  port: 8888
+
+mysql:
+  uri: 'ql:123456@tcp(localhost:3306)/test_user_service'

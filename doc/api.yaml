@@ -1,0 +1,169 @@
+openapi: 3.0.1
+info:
+  title: User-service APIs
+  description: API description of User-service.
+  version: 1.0.0
+
+servers:
+  - url: 'http://localhost:8888'
+
+paths:
+  /user/{user-id}:
+    get:
+      summary: Get information of the user
+      operationId: getUser
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          $ref: "#/components/responses/HTTP400"
+        '403':
+          $ref: "#/components/responses/HTTP403"
+        '404':
+          $ref: "#/components/responses/HTTP404"
+
+    patch:
+      summary: Update information of the user
+      operationId: patchUser
+      requestBody:
+        $ref: '#/components/requestBodies/PatchUserRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          $ref: "#/components/responses/HTTP400"
+        '403':
+          $ref: "#/components/responses/HTTP403"
+        '404':
+          $ref: "#/components/responses/HTTP404"
+
+  /user:
+    post:
+      summary: Create a new user
+      operationId: postUser
+      requestBody:
+        $ref: '#/components/requestBodies/PostUserRequest'
+      responses:
+        '204':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          $ref: "#/components/responses/HTTP400"
+        '403':
+          $ref: "#/components/responses/HTTP403"
+
+  /users:
+    get:
+      summary: Get infomation of all users in the system
+      operationId: getUsers
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+        - in: query
+          name: name
+          description: filter by name
+          required: false
+          schema:
+            type: string
+            example: ACTIVE
+      responses:
+        '200':
+          $ref: '#/components/responses/UsersResponse'
+        '400':
+          $ref: "#/components/responses/HTTP400"
+        '403':
+          $ref: "#/components/responses/HTTP403"
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        msg:
+          type: string
+          example: 'text error description'
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Nguyễn Quang Lý'
+
+  requestBodies:
+    PostUserRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
+    PatchUserRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
+  responses:
+    HTTP400:
+      description: bad input parameter
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    HTTP403:
+      description: forbiden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    HTTP404:
+      description: id not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    UserResponse:
+      description: success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
+    UsersResponse:
+      description: success
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+
+  parameters:
+    Page:
+      in: query
+      name: page
+      description: page of result
+      required: false
+      schema:
+        type: integer
+        example: 1
+
+    Limit:
+      in: query
+      name: limit
+      description: limit size of a page
+      required: false
+      schema:
+        type: integer
+        example: 10
