@@ -8,3 +8,7 @@ create table if not exists users
     gender ENUM ('FEMALE','MALE'),
     unique (name)
 );
+
+truncate table users;
+
+select * from users;

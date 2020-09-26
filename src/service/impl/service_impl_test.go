@@ -233,9 +233,9 @@ func TestServiceImpl_PatchUser(t *testing.T) {
 				mock.ExpectBegin()
 				mock.ExpectExec(regexp.QuoteMeta("UPDATE `users` SET `gender` = ?, `id` = ? WHERE `users`.`id` = ?")).
 					WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectCommit()
 				mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `users`  WHERE (id = ?)")).
 					WillReturnError(gorm.ErrRecordNotFound)
-				mock.ExpectRollback()
 			},
 			req: service.PatchUserRequest{
 				User: model.User{
@@ -254,9 +254,9 @@ func TestServiceImpl_PatchUser(t *testing.T) {
 				mock.ExpectBegin()
 				mock.ExpectExec(regexp.QuoteMeta("UPDATE `users` SET `gender` = ?, `id` = ? WHERE `users`.`id` = ?")).
 					WillReturnResult(sqlmock.NewResult(1, 1))
+				mock.ExpectCommit()
 				mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `users`  WHERE (id = ?)")).
 					WillReturnRows(userRow)
-				mock.ExpectCommit()
 			},
 			req: service.PatchUserRequest{
 				User: model.User{

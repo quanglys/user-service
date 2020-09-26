@@ -25,7 +25,7 @@ func NewServiceImpl(db *gorm.DB, log *log2.Logger) (service.UserService, error) 
 	return src, nil
 }
 
-func (s serviceImpl) GetUser(ctx context.Context, request service.GetUserRequest) (*service.UserResponse, error) {
+func (s serviceImpl) GetUser(_ context.Context, request service.GetUserRequest) (*service.UserResponse, error) {
 
 	var user model.User
 
@@ -43,7 +43,7 @@ func (s serviceImpl) GetUser(ctx context.Context, request service.GetUserRequest
 	return &service.UserResponse{User: user}, nil
 }
 
-func (s serviceImpl) PostUser(ctx context.Context, request service.PostUserRequest) (*service.UserResponse, error) {
+func (s serviceImpl) PostUser(_ context.Context, request service.PostUserRequest) (*service.UserResponse, error) {
 	ret := s.db.Omit("id").Create(&request.User)
 	if err := ret.Error; err != nil {
 		msg := fmt.Sprintf("can not create new user %v, %v", request.User, err)
@@ -55,14 +55,6 @@ func (s serviceImpl) PostUser(ctx context.Context, request service.PostUserReque
 
 func (s serviceImpl) PatchUser(ctx context.Context, request service.PatchUserRequest) (*service.UserResponse, error) {
 	var err error
-	s.db.Begin()
-	defer func() {
-		if err != nil {
-			s.db.Rollback()
-		} else {
-			s.db.Commit()
-		}
-	}()
 	ret := s.db.Model(&request.User).Updates(&request.User)
 	if err = ret.Error; err != nil {
 		msg := fmt.Sprintf("can't update user info: %d", request.User.ID)
@@ -73,7 +65,7 @@ func (s serviceImpl) PatchUser(ctx context.Context, request service.PatchUserReq
 	return s.GetUser(ctx, service.GetUserRequest{UserID: request.User.ID})
 }
 
-func (s serviceImpl) GetUsers(ctx context.Context, request service.GetUsersRequest) (*service.UsersResponse, error) {
+func (s serviceImpl) GetUsers(_ context.Context, request service.GetUsersRequest) (*service.UsersResponse, error) {
 	var users []model.User
 	db := s.db.Where(request.Filter)
 
